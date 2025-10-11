@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "273320589581",
+    "project_id": "neighbour-nest",
+    "storage_bucket": "neighbour-nest.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273320589581:android:f6041fda456046c64bd844",
+        "android_client_info": {
+          "package_name": "com.neighbournest.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF5DsbNfQSCY5ljES6ucHZoPjDj7mPYkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
