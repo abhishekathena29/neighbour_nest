@@ -6,6 +6,10 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import '../auth_provider.dart';
 
+/// OLD DESIGN - PASSWORD RECOVERY
+/// This screen is for existing users who forgot their password.
+/// Accessible from the login screen.
+/// Route: /forgot-password
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 

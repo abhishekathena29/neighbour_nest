@@ -9,6 +9,10 @@ import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
 import '../auth_provider.dart';
 
+/// OLD DESIGN - KEPT FOR EXISTING USERS
+/// This is the traditional login screen for users who already have accounts.
+/// New users go through the Welcome -> User Type Selection flow.
+/// Route: /login
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 

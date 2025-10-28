@@ -2,21 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color primaryColor = Color(0xFF2E7D32);
-  static const Color secondaryColor = Color(0xFF4CAF50);
-  static const Color accentColor = Color(0xFF8BC34A);
+  // NearWise Brand Colors
+  static const Color primaryColor = Color(0xFF1E5F5A); // Teal/Dark Green
+  static const Color primaryDark = Color(0xFF2C4A5A); // Dark Navy Blue
+  static const Color secondaryColor = Color(0xFF4CAF50); // Green
+  static const Color accentTeal = Color(0xFF5EBDB3); // Lighter Teal
+  static const Color accentPurple = Color(0xFF7B68C8); // Purple
   static const Color errorColor = Color(0xFFD32F2F);
   static const Color warningColor = Color(0xFFFF9800);
   static const Color infoColor = Color(0xFF2196F3);
   static const Color successColor = Color(0xFF4CAF50);
 
-  static const Color backgroundColor = Color(0xFFF5F5F5);
+  // Background Colors
+  static const Color backgroundColor = Color(0xFFE8F4F4); // Light mint/blue
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color cardColor = Color(0xFFFFFFFF);
 
-  static const Color textPrimary = Color(0xFF212121);
-  static const Color textSecondary = Color(0xFF757575);
+  // Text Colors
+  static const Color textPrimary = Color(0xFF1A3B47); // Dark blue-green
+  static const Color textSecondary = Color(0xFF6B7D87); // Gray
   static const Color textHint = Color(0xFFBDBDBD);
+
+  // Gradient Colors
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [Color(0xFF6BCBA4), Color(0xFFD4A574)],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  static const LinearGradient greenOrangeGradient = LinearGradient(
+    colors: [Color(0xFF6BCBA4), Color(0xFFE8B87D)],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  static const LinearGradient purpleGradient = LinearGradient(
+    colors: [Color(0xFF6B7DC8), Color(0xFF8B68C8)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
 
   static const Color dividerColor = Color(0xFFE0E0E0);
   static const Color shadowColor = Color(0x1A000000);
@@ -30,9 +54,9 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: surfaceColor,
-        background: backgroundColor,
         error: errorColor,
       ),
+      scaffoldBackgroundColor: backgroundColor,
       textTheme: GoogleFonts.poppinsTextTheme().copyWith(
         headlineLarge: GoogleFonts.poppins(
           fontSize: 32,

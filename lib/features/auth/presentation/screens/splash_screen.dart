@@ -38,14 +38,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (authProvider.isAuthenticated && authProvider.userProfile != null) {
       context.go('/dashboard');
     } else {
-      context.go('/login');
+      context.go('/welcome');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.primaryColor,
+      backgroundColor: AppTheme.backgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,21 +55,17 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.primaryColor,
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.home_work,
-                color: AppTheme.primaryColor,
-                size: 60,
-              ),
+              child: const Icon(Icons.share, color: Colors.white, size: 60),
             ),
             const SizedBox(height: 32),
 
@@ -77,26 +73,28 @@ class _SplashScreenState extends State<SplashScreen> {
             Text(
               AppConstants.appName,
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                color: Colors.white,
+                color: AppTheme.textPrimary,
                 fontWeight: FontWeight.bold,
-                fontSize: 32,
+                fontSize: 36,
               ),
             ),
             const SizedBox(height: 8),
 
             // Tagline
             Text(
-              'Connect with your neighbors',
+              'Connect with your community',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.white.withOpacity(0.9),
+                color: AppTheme.textSecondary,
                 fontSize: 16,
               ),
             ),
             const SizedBox(height: 48),
 
             // Loading Indicator
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            CircularProgressIndicator(
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppTheme.primaryColor,
+              ),
               strokeWidth: 3,
             ),
           ],

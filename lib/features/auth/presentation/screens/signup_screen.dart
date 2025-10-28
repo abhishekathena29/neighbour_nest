@@ -9,6 +9,10 @@ import '../widgets/auth_button.dart';
 import '../widgets/user_type_selector.dart';
 import '../auth_provider.dart';
 
+/// OLD DESIGN - KEPT FOR DIRECT SIGNUP FLOW
+/// This is the traditional signup screen with full form.
+/// New users can use the Welcome -> User Type Selection -> Form flow instead.
+/// Route: /signup
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 

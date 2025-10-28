@@ -1,7 +1,9 @@
 class AppConstants {
   // App Information
-  static const String appName = 'NeighbourNest';
+  static const String appName = 'NearWise';
   static const String appVersion = '1.0.0';
+  static const String appTagline =
+      'Connect with your community and share skills that matter.';
 
   // Firebase Collections
   static const String usersCollection = 'users';

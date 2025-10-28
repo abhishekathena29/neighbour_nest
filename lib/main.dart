@@ -28,7 +28,7 @@ class NeighbourNestApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           return MaterialApp.router(
-            title: 'NeighbourNest 1',
+            title: 'NearWise',
             theme: AppTheme.lightTheme,
             routerConfig: AppRouter.router,
             debugShowCheckedModeBanner: false,

@@ -2,6 +2,12 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../features/auth/presentation/auth_provider.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
+import '../../features/auth/presentation/screens/welcome_screen.dart';
+import '../../features/auth/presentation/screens/user_type_selection_screen.dart';
+import '../../features/auth/presentation/screens/almost_there_screen.dart';
+import '../../features/auth/presentation/screens/share_skills_form_screen.dart';
+import '../../features/auth/presentation/screens/contributors_list_screen.dart';
+import '../../features/auth/presentation/screens/skill_requests_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
@@ -15,26 +21,29 @@ class AppRouter {
     redirect: (context, state) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      // Handle splash screen - let the splash screen handle the delay
-      if (state.uri.path == '/splash') {
-        return null; // Stay on splash, let SplashScreen handle navigation
+      // List of public routes that don't require authentication
+      final publicRoutes = [
+        '/splash',
+        '/welcome',
+        '/user-type-selection',
+        '/almost-there',
+        '/share-skills-form',
+        '/contributors-list',
+        '/skill-requests',
+        '/login',
+        '/signup',
+        '/forgot-password',
+      ];
+
+      // Allow access to all public routes
+      if (publicRoutes.contains(state.uri.path)) {
+        return null;
       }
 
-      // If user is not authenticated, redirect to login
+      // For protected routes (dashboard), check authentication
       if (!authProvider.isAuthenticated) {
-        return '/login';
-      }
-
-      // If user is authenticated but profile is not loaded, wait
-      if (authProvider.userProfile == null) {
-        return null; // Stay on current route
-      }
-
-      // If user is on auth screens but authenticated, redirect to dashboard
-      if (state.uri.path.startsWith('/login') ||
-          state.uri.path.startsWith('/signup') ||
-          state.uri.path.startsWith('/forgot-password')) {
-        return '/dashboard';
+        // Redirect to welcome for unauthenticated users trying to access protected routes
+        return '/welcome';
       }
 
       return null; // No redirect needed
@@ -44,6 +53,31 @@ class AppRouter {
       GoRoute(
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      // Welcome/Onboarding Routes
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
+        path: '/user-type-selection',
+        builder: (context, state) => const UserTypeSelectionScreen(),
+      ),
+      GoRoute(
+        path: '/almost-there',
+        builder: (context, state) => const AlmostThereScreen(),
+      ),
+      GoRoute(
+        path: '/share-skills-form',
+        builder: (context, state) => const ShareSkillsFormScreen(),
+      ),
+      GoRoute(
+        path: '/contributors-list',
+        builder: (context, state) => const ContributorsListScreen(),
+      ),
+      GoRoute(
+        path: '/skill-requests',
+        builder: (context, state) => const SkillRequestsScreen(),
       ),
       // Auth Routes
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
