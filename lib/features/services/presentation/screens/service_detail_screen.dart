@@ -4,6 +4,8 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/models/service_model.dart';
 import '../../../auth/presentation/auth_provider.dart';
+import '../../../messaging/presentation/message_provider.dart';
+import '../../../messaging/presentation/screens/chat_screen.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
   final ServiceModel service;
@@ -407,44 +409,83 @@ class ServiceDetailScreen extends StatelessWidget {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  void _showContactDialog(BuildContext context) {
+  void _showContactDialog(BuildContext context) async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final messageProvider = Provider.of<MessageProvider>(
+      context,
+      listen: false,
+    );
+
+    if (authProvider.userProfile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login to start a conversation'),
+          backgroundColor: AppTheme.errorColor,
+        ),
+      );
+      return;
+    }
+
+    // Show loading dialog
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Contact ${service.title}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Service Provider: ${service.contributorId}'),
-            if (service.contactInfo != null) ...[
-              const SizedBox(height: 8),
-              Text('Contact: ${service.contactInfo}'),
-            ],
-            const SizedBox(height: 16),
-            const Text('Would you like to start a conversation?'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Navigate to chat screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Starting conversation...'),
-                  backgroundColor: AppTheme.primaryColor,
-                ),
-              );
-            },
-            child: const Text('Start Chat'),
-          ),
-        ],
-      ),
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
     );
+
+    try {
+      // Create or get conversation
+      final conversationId = await messageProvider.createConversation(
+        participant1Id: authProvider.userProfile!.id,
+        participant2Id: service.contributorId,
+        serviceId: service.id,
+      );
+
+      // Close loading dialog
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+
+      if (conversationId != null) {
+        // Navigate to chat screen
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(
+                conversationId: conversationId,
+                otherUserId: service.contributorId,
+                service: service,
+              ),
+            ),
+          );
+        }
+      } else {
+        // Show error
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to start conversation. Please try again.'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Close loading dialog
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+
+      // Show error
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    }
   }
 }

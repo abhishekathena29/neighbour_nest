@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppConstants {
   // App Information
   static const String appName = 'NearWise';
@@ -38,57 +40,57 @@ class AppConstants {
       'id': 'academic_tutoring',
       'name': 'Academic Tutoring',
       'description': 'Math, Science, Languages, and more',
-      'icon': 'school',
-      'color': '#2196F3',
+      'icon': Icons.school,
+      'color': Color(0xff2196F3),
     },
     {
       'id': 'professional_services',
       'name': 'Professional Services',
       'description': 'Legal, Financial, Business consulting',
-      'icon': 'business',
-      'color': '#4CAF50',
+      'icon': Icons.business,
+      'color': Color(0xff4CAF50),
     },
     {
       'id': 'creative_arts',
       'name': 'Creative Arts',
       'description': 'Music, Art, Writing, Design',
-      'icon': 'palette',
-      'color': '#FF9800',
+      'icon': Icons.palette,
+      'color': Color(0xffFF9800),
     },
     {
       'id': 'health_wellness',
       'name': 'Health & Wellness',
       'description': 'Fitness, Nutrition, Mental health',
-      'icon': 'favorite',
-      'color': '#E91E63',
+      'icon': Icons.favorite,
+      'color': Color(0xffE91E63),
     },
     {
       'id': 'technology',
       'name': 'Technology',
       'description': 'Programming, Digital skills, IT support',
-      'icon': 'computer',
-      'color': '#9C27B0',
+      'icon': Icons.computer,
+      'color': Color(0xff9C27B0),
     },
     {
       'id': 'home_services',
       'name': 'Home Services',
       'description': 'Plumbing, Electrical, Gardening',
-      'icon': 'home',
-      'color': '#795548',
+      'icon': Icons.home,
+      'color': Color(0xff795548),
     },
     {
       'id': 'lifestyle',
       'name': 'Lifestyle',
       'description': 'Cooking, Fashion, Travel planning',
-      'icon': 'star',
-      'color': '#FFC107',
+      'icon': Icons.star,
+      'color': Color(0xffFFC107),
     },
     {
       'id': 'other',
       'name': 'Other',
       'description': 'Miscellaneous services and skills',
-      'icon': 'more_horiz',
-      'color': '#607D8B',
+      'icon': Icons.more_horiz,
+      'color': Color(0xff607D8B),
     },
   ];
 

@@ -26,9 +26,24 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
   String _selectedCategory = 'academic_tutoring';
   ServiceType _selectedServiceType = ServiceType.oneTime;
   bool _isOnline = false;
+  bool _hasPricing = true; // New: Switch for pricing
   DateTime? _availableFrom;
   DateTime? _availableTo;
   int _maxParticipants = 1;
+
+  // New: Available timing
+  TimeOfDay? _availableStartTime;
+  TimeOfDay? _availableEndTime;
+  List<String> _selectedDays = [];
+  final List<String> _daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
 
   @override
   void dispose() {
@@ -141,21 +156,42 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
               _buildSectionTitle('Pricing & Availability'),
               const SizedBox(height: 16),
 
-              // Price
-              _buildTextField(
-                controller: _priceController,
-                label: 'Price (₹)',
-                hint: '500',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    if (double.tryParse(value) == null) {
-                      return 'Please enter valid price';
+              // Has Pricing Switch
+              _buildSwitchTile(
+                title: 'Include Pricing',
+                subtitle: 'Turn off if you want to discuss pricing separately',
+                value: _hasPricing,
+                onChanged: (value) {
+                  setState(() {
+                    _hasPricing = value!;
+                    if (!_hasPricing) {
+                      _priceController.clear();
                     }
-                  }
-                  return null;
+                  });
                 },
               ),
+
+              // Price (shown only if _hasPricing is true)
+              if (_hasPricing) ...[
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _priceController,
+                  label: 'Price (₹)',
+                  hint: '500',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (_hasPricing) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter price';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Please enter valid price';
+                      }
+                    }
+                    return null;
+                  },
+                ),
+              ],
 
               const SizedBox(height: 16),
 
@@ -224,6 +260,94 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
 
               const SizedBox(height: 24),
 
+              _buildSectionTitle('Available Timing'),
+              const SizedBox(height: 16),
+
+              // Available Days
+              const Text(
+                'Available Days',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _daysOfWeek.map((day) {
+                  final isSelected = _selectedDays.contains(day);
+                  return FilterChip(
+                    label: Text(day),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
+                          _selectedDays.add(day);
+                        } else {
+                          _selectedDays.remove(day);
+                        }
+                      });
+                    },
+                    selectedColor: AppTheme.primaryColor.withOpacity(0.2),
+                    checkmarkColor: AppTheme.primaryColor,
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? AppTheme.primaryColor
+                          : AppTheme.textSecondary,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Time Range
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildTimeField(
+                      label: 'Start Time',
+                      value: _availableStartTime,
+                      onTap: () async {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (time != null) {
+                          setState(() {
+                            _availableStartTime = time;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildTimeField(
+                      label: 'End Time',
+                      value: _availableEndTime,
+                      onTap: () async {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: _availableStartTime ?? TimeOfDay.now(),
+                        );
+                        if (time != null) {
+                          setState(() {
+                            _availableEndTime = time;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
               _buildSectionTitle('Additional Information'),
               const SizedBox(height: 16),
 
@@ -263,39 +387,44 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
               // Submit Button
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _handleSubmit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppConstants.borderRadius,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.greenOrangeGradient,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _handleSubmit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                  ),
-                  child: Consumer<ServiceProvider>(
-                    builder: (context, serviceProvider, child) {
-                      return serviceProvider.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
+                    child: Consumer<ServiceProvider>(
+                      builder: (context, serviceProvider, child) {
+                        return serviceProvider.isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : const Text(
-                              'Create Service',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            );
-                    },
+                              )
+                            : const Text(
+                                'Create Service',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -484,6 +613,58 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     );
   }
 
+  Widget _buildTimeField({
+    required String label,
+    required TimeOfDay? value,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: onTap,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+              border: Border.all(
+                color: AppTheme.textSecondary.withOpacity(0.3),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.access_time,
+                  color: AppTheme.textSecondary,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  value != null ? value.format(context) : 'Select time',
+                  style: TextStyle(
+                    color: value != null
+                        ? AppTheme.textPrimary
+                        : AppTheme.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   String _getServiceTypeLabel(ServiceType type) {
     switch (type) {
       case ServiceType.oneTime:
@@ -506,6 +687,15 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
 
     if (authProvider.userProfile == null) return;
 
+    // Build timing string
+    String? timingString;
+    if (_selectedDays.isNotEmpty &&
+        _availableStartTime != null &&
+        _availableEndTime != null) {
+      timingString =
+          '${_selectedDays.join(', ')}: ${_availableStartTime!.format(context)} - ${_availableEndTime!.format(context)}';
+    }
+
     final service = ServiceModel(
       id: '', // Will be set by Firestore
       contributorId: authProvider.userProfile!.id,
@@ -518,7 +708,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
           .where((tag) => tag.isNotEmpty)
           .toList(),
       serviceType: _selectedServiceType,
-      price: _priceController.text.isNotEmpty
+      price: _hasPricing && _priceController.text.isNotEmpty
           ? double.tryParse(_priceController.text)
           : null,
       location: _locationController.text.trim().isNotEmpty
@@ -533,6 +723,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
           : null,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      requirements: timingString != null ? {'timing': timingString} : null,
     );
 
     final success = await serviceProvider.createService(service);

@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/responsive_wrapper.dart';
+import 'signup_screen.dart';
+import '../../../../shared/models/user_model.dart';
 
 class UserTypeSelectionScreen extends StatelessWidget {
   const UserTypeSelectionScreen({super.key});
@@ -16,12 +18,18 @@ class UserTypeSelectionScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/welcome');
+            }
+          },
         ),
       ),
       body: SafeArea(
         child: ResponsiveWrapper(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: EdgeInsets.all(context.responsivePadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,7 +85,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
 
-                // Option 1: Offer Skills
+                // Option 1: Offer Skills (Contributor)
                 _UserTypeCard(
                   gradient: AppTheme.primaryGradient,
                   icon: Icons.person_add_outlined,
@@ -91,12 +99,18 @@ class UserTypeSelectionScreen extends StatelessWidget {
                     Color(0xFFB88DC8),
                   ],
                   onTap: () {
-                    context.go('/share-skills-form');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const SignUpScreen(userType: UserType.contributor),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 24),
 
-                // Option 2: Find Skills
+                // Option 2: Find Skills (Customer)
                 _UserTypeCard(
                   gradient: AppTheme.purpleGradient,
                   icon: Icons.search,
@@ -110,10 +124,16 @@ class UserTypeSelectionScreen extends StatelessWidget {
                     Color(0xFFB88DC8),
                   ],
                   onTap: () {
-                    context.go('/almost-there');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const SignUpScreen(userType: UserType.customer),
+                      ),
+                    );
                   },
                 ),
-                const Spacer(),
+                const SizedBox(height: 40),
 
                 // Bottom Note
                 Padding(
@@ -125,6 +145,29 @@ class UserTypeSelectionScreen extends StatelessWidget {
                       color: AppTheme.textSecondary,
                     ),
                   ),
+                ),
+                const SizedBox(height: 24),
+
+                // Already have account link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account? ',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.go('/login');
+                      },
+                      child: const Text(
+                        'Sign In',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
               ],
@@ -197,7 +240,10 @@ class _UserTypeCard extends StatelessWidget {
             Text(
               description,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppTheme.textSecondary,
+              ),
             ),
             const SizedBox(height: 16),
 

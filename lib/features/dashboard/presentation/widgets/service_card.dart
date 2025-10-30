@@ -10,6 +10,8 @@ class ServiceCard extends StatelessWidget {
   final double rating;
   final int price;
   final VoidCallback onTap;
+  final VoidCallback? onConnect;
+  final bool showConnectButton;
 
   const ServiceCard({
     super.key,
@@ -19,6 +21,8 @@ class ServiceCard extends StatelessWidget {
     required this.rating,
     required this.price,
     required this.onTap,
+    this.onConnect,
+    this.showConnectButton = false,
   });
 
   @override
@@ -126,6 +130,25 @@ class ServiceCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (showConnectButton && onConnect != null) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onConnect,
+                  icon: const Icon(Icons.message, size: 18),
+                  label: const Text('Connect'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
